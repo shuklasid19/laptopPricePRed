@@ -1,0 +1,63 @@
+schema: '2.0'
+stages:
+  load_data:
+    cmd: python src/load_data.py --config=params.yaml
+    deps:
+    - path: data_given/laptop_data.csv
+      md5: 479821469cbffd2cc0d26ac781c9f2df
+      size: 182053
+    - path: src/get_data.py
+      md5: d244ab0c867c90aa11b87373fc08ac23
+      size: 808
+    - path: src/load_data.py
+      md5: 48cf1a3a1622d26ab2c0cf748debece1
+      size: 6684
+    outs:
+    - path: data/raw/laptop_data.csv
+      md5: 351d861c4a4ea0283073509e76033b87
+      size: 117708
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - path: data/raw/laptop_data.csv
+      md5: 351d861c4a4ea0283073509e76033b87
+      size: 117708
+    - path: src/split_data.py
+      md5: 009ed9d88c5724029be411535bae316a
+      size: 1351
+    outs:
+    - path: data/processed/test_laptop_data.csv
+      md5: 2c5a7df4d269b87a17be4f7c7570506c
+      size: 25652
+    - path: data/processed/train_laptop_data.csv
+      md5: 2db29e4b8561f2d8b729a43f53180e06
+      size: 129361
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - path: data/processed/test_laptop_data.csv
+      md5: 2c5a7df4d269b87a17be4f7c7570506c
+      size: 25652
+    - path: data/processed/train_laptop_data.csv
+      md5: 2db29e4b8561f2d8b729a43f53180e06
+      size: 129361
+    - path: src/train_and_evaluate.py
+      md5: 53daa41d78f3a8b8d36ecf786161e765
+      size: 3967
+    params:
+      params.yaml:
+        estimators.RandomForestRegressor.params.max_depth: 10
+        estimators.RandomForestRegressor.params.max_features: 0.075
+        estimators.RandomForestRegressor.params.max_samples: 0.3
+        estimators.RandomForestRegressor.params.n_estimators: 90
+        estimators.RandomForestRegressor.params.random_state: 4
+    outs:
+    - path: report/params.json
+      md5: 2d597f799f78d39e5996c1181349d3e1
+      size: 127
+    - path: report/scores.json
+      md5: f75f9e8bd37ff61854591b0735dbc539
+      size: 101
+    - path: saved_models/model.joblib
+      md5: 475ea9697466a620fe37a88bf24c812e
+      size: 1570499

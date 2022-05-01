@@ -1,0 +1,7 @@
+{
+    "n_estimators": 90,
+    "random_state": 4,
+    "max_samples": 0.3,
+    "max_features": 0.075,
+    "max_depth": 10
+}
